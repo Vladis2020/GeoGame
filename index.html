@@ -1,0 +1,263 @@
+<?php
+var_dump($result);
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' >
+    <title>Diplom</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+    <script src='cities_database.geojson'></script>
+   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <style>
+       body { }
+
+        #wrapper {
+          overflow: auto;
+        }
+        #map {
+          top:0;
+          bottom:0;
+          width: calc(100% - 300px);
+          height: 100vh;
+          background-color: black;
+          border-right: 1px solid darkgrey;
+          float:left
+        }
+        #section {
+          height: 100vh;
+          width: 279px;
+          overflow: auto;
+          background: white;
+          padding-left: 10px;
+          padding-right: 10px;
+
+        }
+		#section.transitionColor
+		{ background-color:white;
+		  animation-name: toBack;
+		  animation-duration: 2s;
+		}
+		#section.transitionColor2
+		{ background-color:white;
+		  animation-name: toBack2;
+		  animation-duration: 2s;
+		}
+        input[type="submit"] {
+
+        }
+		.dialog {
+  min-width: 400px;
+  padding: 25px;
+  border: 0;
+  border-radius: 10px;
+  box-shadow: 0 2px 15px 0 rgba(0,0,0,0.1);
+  background: #fafafa;
+  animation: dialogSlide 0.3s;
+}
+
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  animation: dialogBackdropFade 0.2s;
+}
+
+@keyframes dialogSlide {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+}
+
+@keyframes dialogBackdropFade {
+  from {
+    background: rgba(0, 0, 0, 0);
+  }
+}
+
+		
+button {
+}
+.custom-btn {
+  width: 150px;
+  height: 40px;
+  color: #fff;
+  border-radius: 5px;
+  padding: 1px 5px;
+  font-family: 'Lato', sans-serif;
+  font-weight: 500;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+   box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+   7px 7px 20px 0px rgba(0,0,0,.1),
+   4px 4px 5px 0px rgba(0,0,0,.1);
+  outline: none;
+}
+.btn-11 {
+  border: none;
+  background: rgb(251,33,117);
+    background: linear-gradient(0deg, rgba(251,33,117,1) 0%, rgba(234,76,137,1) 100%);
+    color: #fff;
+    overflow: hidden;
+}
+.btn-11:hover {
+    text-decoration: none;
+    color: #fff;
+}
+.btn-11:before {
+    position: absolute;
+    content: '';
+    display: inline-block;
+    top: -180px;
+    left: 0;
+    width: 30px;
+    height: 100%;
+    background-color: #fff;
+    animation: shiny-btn1 3s ease-in-out infinite;
+}
+.btn-11:hover{
+  opacity: .7;
+}
+.btn-11:active{
+  box-shadow:  4px 4px 6px 0 rgba(255,255,255,.3),
+              -4px -4px 6px 0 rgba(116, 125, 136, .2), 
+    inset -4px -4px 6px 0 rgba(255,255,255,.2),
+    inset 4px 4px 6px 0 rgba(0, 0, 0, .2);
+}
+
+
+
+@-webkit-keyframes shiny-btn1 {
+    0% { -webkit-transform: scale(0) rotate(45deg); opacity: 0; }
+    80% { -webkit-transform: scale(0) rotate(45deg); opacity: 0.5; }
+    81% { -webkit-transform: scale(4) rotate(45deg); opacity: 1; }
+    100% { -webkit-transform: scale(50) rotate(45deg); opacity: 0; }
+}
+        h3 {
+          font-family: 'Lato', sans-serif;
+          font-size: 32px;
+          display: inline;
+        }
+        p {
+          display: inline;
+          font-family: 'Lato', sans-serif;
+        }
+
+        #att {
+          font-size: 12px;
+          padding: 7px;
+          border: 1px solid;
+          border-color: lightgrey;
+          background-color: #FCFAF2;
+        }
+        #att p {
+          color: grey;
+        }
+
+        #att a {
+          text-decoration: none;
+          color: #444444;
+        }
+		@keyframes toBack {
+
+		
+		from{background-color:red;}
+		to{background-color:white;}
+  
+} @keyframes toBack2 {
+
+		
+		from{background-color:#9CFF70;}
+		to{background-color:white;}
+  
+}
+
+
+
+
+    </style>
+
+</head>
+<body>
+
+<div id='wrapper'>
+
+  <div id='map'></div>
+
+  <div id='section' >
+    <br>
+    <form name="quizForm" onsubmit="return submitAnswers()">
+          <h3>Города и страны</h3>
+          <br><br>
+          <p>&nbsp;Уровень: </p><p id="level">1</p><p>&nbsp;</p><br>
+          <p>&nbsp;Очки: </p><p id="score">0</p><br>
+          <br>
+
+          <input type="radio" name="question" value="1" id="q1a"><p id="point1"></p><br>
+          <input type="radio" name="question" value="2" id="q1b"><p id="point2"></p><br>
+          <input type="radio" name="question" value="3" id="q1c"><p id="point3"></p><br>
+          <input type="radio" name="question" value="4" id="q1d"><p id="point4"></p><br>
+
+          <br>
+          <button class="custom-btn btn-11" onclick="document.getElementById('hint').style.display = 'none'" type="submit"  >Подтвердить ответ</button>
+    </form>
+    <br>
+
+    <p>&nbsp;</p><p id="message">Удачи и хорошей игры!</p><br>
+    <p id="code"></p>
+    <br>
+	<button class="custom-btn btn-11" onclick="openDialog()">Конец игры</button>
+	<dialog id="final" class="dialog">
+	<p>&nbsp;Имя: </p><p id="pname" ></p><br>
+    <p>&nbsp;Максимальный уровень: </p><p id="hlevel">0</p><br>
+    <p>&nbsp;Максимально набранные очки: </p><p id="hscore">0</p><br>
+	<button class="custom-btn btn-11" onclick="closeDialog()">Вернуться к игре</button>
+	<button class="custom-btn btn-11" onclick="document.location='start.html'" style="    
+	padding-left: 5px;
+    border-left-width: 10px;
+    left: 95px;
+">На главную страницу</button>
+</dialog>
+    <br>
+    <br>
+
+  <div id="att">
+  <p>
+    Владислав Шепшелев</a>.<br> Дипломный проект </a> 2021</a> Электронный атлас "Страны мира"</a>.
+  </p>
+
+</div><br>
+  <button onclick="promo()"  class="custom-btn btn-11">Показать подсказку</button>
+	<p id="hint" style="display: none"></p><br>
+
+
+  <div class="main"></div>
+<div class="main"></div>
+
+  </div>
+</div>
+</div>
+
+<script src='map_all.js'></script>
+<script>
+  function promo() {
+    document.getElementById('hint').style.display = document.getElementById('hint').style.display == 'none' ? 'block' : 'none';
+  }
+  function openDialog(){
+    document.getElementById("final").showModal();
+  }
+  function closeDialog(){
+    document.getElementById("final").close();
+  } 
+  document.getElementById("pname").innerHTML=localStorage.getItem('key');
+
+</script>
+
+</body>
+</html>
